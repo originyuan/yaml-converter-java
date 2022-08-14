@@ -34,6 +34,7 @@ public class YamlConverter {
         try {
             JsonNode jsonNode = yamlOm.readTree(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             parseJson2Prop(jsonNode, new ArrayList<>(), result);
+            dealSpecialSymbols(result);
         } catch (Exception e) {
             throw new RuntimeException("转换异常，请检查格式");
         }
@@ -49,6 +50,7 @@ public class YamlConverter {
         try {
             JsonNode jsonNode = yamlOm.readTree(yamlContent);
             parseJson2Prop(jsonNode, new ArrayList<>(), result);
+            dealSpecialSymbols(result);
         } catch (Exception e) {
             throw new RuntimeException("转换异常，请检查格式");
         }
@@ -104,6 +106,25 @@ public class YamlConverter {
         sb.delete(sb.length()-1, sb.length());
         sb.append("=").append(nodeVal);
         result.add(new PropertiesResult(sb.toString()));
+    }
+
+
+
+    /**
+     * 标记可能出现的特殊符号
+     * 包括占位符引用 ${xxx}  文件引用 classpath:xxx.yml
+     * 只做简单判断标记，不处理
+     * todo 可以考虑替换${xxx}
+     * @param result
+     */
+    public static void dealSpecialSymbols(List<PropertiesResult> result) {
+
+        result.forEach(e -> {
+            String propStr = e.getPropStr();
+            if (propStr.contains("${") || propStr.contains("classpath:")) {
+                e.existsSpecial(true);
+            }
+        });
     }
 
 
