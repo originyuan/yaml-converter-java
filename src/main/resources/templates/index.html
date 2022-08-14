@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 引入样式 -->
+    <!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <link rel="stylesheet" href="./elementui/index.css">
+
+</head>
+<body>
+
+<div id="app">
+
+    <h2>YAML 转换 Properties 工具</h2>
+
+    <textarea id="yamlContent" v-model="yaml" rows="20" cols="130"></textarea>
+
+    <br>
+    <button v-on:click="sendConvert">转换</button>
+    <div style="color: red">{{errmsg}}</div>
+    <br>
+
+    <textarea id="propContent" v-model="prop" rows="20" cols="130"></textarea>
+
+    <br>
+
+    <div id="special" >{{special}}</div>
+
+    <br>
+    <br>
+    <br>
+
+</div>
+
+
+<script src="./vue.js"></script>
+<script src="./axios.js"></script>
+<!-- 引入组件库 -->
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<script src="./elementui/index.js"></script>
+
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            counter: 0,
+            yaml: "",
+            prop: "",
+            errmsg: "",
+            special: ""
+        },
+        methods: {
+            sendConvert() {
+                let d = {
+                    yamlContent: this.yaml
+                }
+                // axios.post("http://localhost:8080/convertYamlFromContent", data)
+                axios({
+                    url: 'http://localhost:8080/convertYamlFromContent',
+                    method: 'post',
+                    data: d
+                }).then(res => {
+                    console.log(res);
+                    let rd = res.data
+                    if (rd.code == 0) {
+                        let convertRes = rd.data;
+                        console.log(convertRes);
+                        this.prop = convertRes.props;
+                        this.errmsg = '';
+                        this.special = '';
+                        if (convertRes.specialProps != null && convertRes.specialProps !== '') {
+                            this.special = convertRes.specialProps;
+                        }
+                    } else {
+                        this.errmsg = rd.msg;
+                    }
+                })
+            },
+        }
+    })
+</script>
+
+
+</body>
+</html>

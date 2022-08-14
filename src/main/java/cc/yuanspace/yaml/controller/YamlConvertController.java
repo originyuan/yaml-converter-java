@@ -5,10 +5,7 @@ import cc.yuanspace.yaml.model.PropertiesResult;
 import cc.yuanspace.yaml.vo.ConvertResult;
 import cc.yuanspace.yaml.vo.YamlContentVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,16 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RequestMapping("/convertYaml")
 @RestController
 public class YamlConvertController {
 
-    @PostMapping("/convertYaml")
-    public Map<String, Object> convertYaml(@RequestParam("yamlContent") String yamlContent) {
+    @PostMapping("/convertYamlFromContent")
+    public Map<String, Object> convertYaml(@RequestBody YamlContentVO yamlContent) {
 
-        log.info("前端传递的数据为：\r\n {}", yamlContent);
+        log.info("前端传递的数据为：\r\n{}", yamlContent);
 
-        List<PropertiesResult> propertiesResults = YamlConverter.yaml2Prop(yamlContent);
+        List<PropertiesResult> propertiesResults = YamlConverter.yaml2Prop(yamlContent.getYamlContent());
         ConvertResult result = buildRes(propertiesResults);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("code", 0);
