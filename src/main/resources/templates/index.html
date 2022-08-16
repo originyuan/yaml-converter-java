@@ -23,13 +23,15 @@
     <br>
     <button v-on:click="sendConvert">转换</button>
     <div style="color: red">{{errmsg}}</div>
+    <div id="special" style="color: red; white-space: pre-wrap" >{{special}}</div>
+
     <br>
 
     <textarea id="propContent" v-model="prop" rows="20" cols="130"></textarea>
 
     <br>
 
-    <div id="special" >{{special}}</div>
+
 
     <br>
     <br>
@@ -44,7 +46,7 @@
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 <script src="./elementui/index.js"></script>
 
-<script>
+<script th:inline="javascript">
     const app = new Vue({
         el: "#app",
         data: {
@@ -59,9 +61,10 @@
                 let d = {
                     yamlContent: this.yaml
                 }
+                let url = /*[[@{/convertYamlFromContent}]]*/"http://localhost:8080/convertYamlFromContent";
                 // axios.post("http://localhost:8080/convertYamlFromContent", data)
                 axios({
-                    url: 'http://localhost:8080/convertYamlFromContent',
+                    url: url,
                     method: 'post',
                     data: d
                 }).then(res => {
@@ -74,9 +77,11 @@
                         this.errmsg = '';
                         this.special = '';
                         if (convertRes.specialProps != null && convertRes.specialProps !== '') {
-                            this.special = convertRes.specialProps;
+                            this.special = "以下配置存在特殊引用，请处理：\r\n";
+                            this.special += convertRes.specialProps;
                         }
                     } else {
+                        this.special = '';
                         this.errmsg = rd.msg;
                     }
                 })
