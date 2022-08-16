@@ -15,22 +15,58 @@
 <body>
 
 <div id="app">
+    <el-row>
+        <el-col :span="20" :offset="2">
+            <h2>YAML 转换 Properties 工具</h2>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="20" :offset="2">
+            <el-input id="yamlContent"
+                      type="textarea"
+                      :autosize="{ minRows: 10, maxRows: 20}"
+                      placeholder="请输入内容"
+                      v-model="yaml">
+            </el-input>
+        </el-col>
+    </el-row>
+    <br>
+    <el-row>
+        <el-col :span="20" :offset="2">
+            <el-button @click="sendConvert" id="elBtn" size="small" type="primary" plain>转换</el-button>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="20" :offset="2">
+            <div style="color: red">{{errmsg}}</div>
+            <div id="special" style="color: red; white-space: pre-wrap">{{special}}</div>
+        </el-col>
+    </el-row>
+    <br>
+    <el-row>
+        <el-col :span="20" :offset="2">
+            <el-input id="propContent"
+                      type="textarea"
+                      :autosize="{ minRows: 10, maxRows: 50}"
+                      placeholder="请输入内容"
+                      v-model="prop">
+            </el-input>
+        </el-col>
+    </el-row>
 
-    <h2>YAML 转换 Properties 工具</h2>
 
-    <textarea id="yamlContent" v-model="yaml" rows="20" cols="130"></textarea>
+    <!--    <textarea id="yamlContent" v-model="yaml" rows="20" cols="130"></textarea>-->
+
+    <!--    <br>-->
+    <!--    <button v-on:click="sendConvert">转换</button>-->
+    <!--    <div style="color: red">{{errmsg}}</div>-->
+    <!--    <div id="special" style="color: red; white-space: pre-wrap" >{{special}}</div>-->
+
+    <!--    <br>-->
+
+    <!--    <textarea id="propContent" v-model="prop" rows="20" cols="130"></textarea>-->
 
     <br>
-    <button v-on:click="sendConvert">转换</button>
-    <div style="color: red">{{errmsg}}</div>
-    <div id="special" style="color: red; white-space: pre-wrap" >{{special}}</div>
-
-    <br>
-
-    <textarea id="propContent" v-model="prop" rows="20" cols="130"></textarea>
-
-    <br>
-
 
 
     <br>
@@ -77,7 +113,7 @@
                         this.errmsg = '';
                         this.special = '';
                         if (convertRes.specialProps != null && convertRes.specialProps !== '') {
-                            this.special = "以下配置存在特殊引用，请处理：\r\n";
+                            this.special = "\r\n以下配置存在特殊引用，请处理：\r\n";
                             this.special += convertRes.specialProps;
                         }
                     } else {
